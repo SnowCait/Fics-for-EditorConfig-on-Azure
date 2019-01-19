@@ -5,16 +5,17 @@ module.exports = async function (context, req) {
 
     // https://developer.github.com/webhooks/#events
     const githubEvent = req.headers['x-github-event'];
+    const githubAction = req.body.action;
 
-    if (githubEvent !== 'check_suite') {
+    if (githubEvent !== 'pull_request' || ['opened', 'synchronized'].indexOf(githubAction) < 0) {
         context.res = {
-            body: `Webhook ${githubEvent} success.`
+            body: `Webhook ${githubEvent}.${githubAction} success.`
         };
         return;
     }
 
-    const headSha = req.body.check_suite.pull_requests.head.sha;
-    const baseSha = req.body.check_suite.pull_requests.base.sha;
+    const headSha = req.body.pull_request.head.sha;
+    const baseSha = req.body.pull_request.base.sha;
 
     context.res = {
         body: `Webhook ${githubEvent} success.\nhead: ${headSha}\nbase: ${baseSha}`
