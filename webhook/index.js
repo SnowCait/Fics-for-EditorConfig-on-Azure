@@ -16,8 +16,16 @@ module.exports = async function (context, req) {
 
     const headSha = req.body.pull_request.head.sha;
     const baseSha = req.body.pull_request.base.sha;
+    const mergeSha = req.body.pull_request.merge_commit_sha;
+
+    const result = await octokit.issues.createComment({
+        'owner': req.body.pull_request.head.repo.owner.login,
+        'repo': req.body.pull_request.head.repo.name,
+        'number': req.body.number,
+        'body': `merge: ${mergeSha}\nhead: ${headSha}\nbase: ${baseSha}`
+    });
 
     context.res = {
-        body: `Webhook ${githubEvent} success.\nhead: ${headSha}\nbase: ${baseSha}`
+        body: `Webhook ${githubEvent}.${githubAction} success.`
     };
 };
