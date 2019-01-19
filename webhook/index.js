@@ -21,8 +21,8 @@ module.exports = async function (context, req) {
     // Authenticate
     octokit.authenticate({
         type: 'oauth',
-        key: GetEnvironmentVariable('CliendId'),
-        secret: GetEnvironmentVariable('ClientSecret')
+        key: process.env['ClientId'],
+        secret: process.env['ClientSecret']
     });
 
     const result = await octokit.issues.createComment({
