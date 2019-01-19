@@ -26,13 +26,17 @@ module.exports = async function (context, req) {
     });
 
     context.log('ClientId: ' + process.env['ClientId']);
+    context.log('owner: ' + req.body.pull_request.head.repo.owner.login);
+    context.log('repo: ' + req.body.pull_request.head.repo.name);
+    context.log('number: ' + req.body.number);
+    context.log('body: ' + `merge: ${mergeSha}\nhead: ${headSha}\nbase: ${baseSha}`);
 
-    const result = await octokit.issues.createComment({
-        owner: req.body.pull_request.head.repo.owner.login,
-        repo: req.body.pull_request.head.repo.name,
-        number: req.body.number,
-        body: `merge: ${mergeSha}\nhead: ${headSha}\nbase: ${baseSha}`
-    });
+    // const result = await octokit.issues.createComment({
+    //     owner: req.body.pull_request.head.repo.owner.login,
+    //     repo: req.body.pull_request.head.repo.name,
+    //     number: req.body.number,
+    //     body: `merge: ${mergeSha}\nhead: ${headSha}\nbase: ${baseSha}`
+    // });
 
     context.res = {
         body: `Webhook ${githubEvent}.${githubAction} success.`
