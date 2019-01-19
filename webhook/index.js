@@ -7,7 +7,7 @@ module.exports = async function (context, req) {
     const githubEvent = req.headers['x-github-event'];
     const githubAction = req.body.action;
 
-    if (githubEvent !== 'pull_request' || ['opened', 'synchronized'].indexOf(githubAction) < 0) {
+    if (githubEvent !== 'pull_request' || ['opened', 'synchronize'].indexOf(githubAction) < 0) {
         context.res = {
             body: `Webhook ${githubEvent}.${githubAction} success.`
         };
