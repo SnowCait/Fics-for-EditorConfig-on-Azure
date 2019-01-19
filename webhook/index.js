@@ -17,6 +17,9 @@ module.exports = async function (context, req) {
     const headSha = req.body.pull_request.head.sha;
     const baseSha = req.body.pull_request.base.sha;
     const mergeSha = req.body.pull_request.merge_commit_sha;
+    const owner = req.body.pull_request.head.repo.owner.login;
+    const repo = req.body.pull_request.head.repo.name;
+    const number = req.body.number;
 
     // Authenticate
     octokit.authenticate({
@@ -25,18 +28,19 @@ module.exports = async function (context, req) {
         secret: process.env['ClientSecret']
     });
 
-    context.log('ClientId: ' + process.env['ClientId']);
-    context.log('owner: ' + req.body.pull_request.head.repo.owner.login);
-    context.log('repo: ' + req.body.pull_request.head.repo.name);
-    context.log('number: ' + req.body.number);
-    context.log('body: ' + `merge: ${mergeSha}\nhead: ${headSha}\nbase: ${baseSha}`);
-
     // const result = await octokit.issues.createComment({
     //     owner: req.body.pull_request.head.repo.owner.login,
     //     repo: req.body.pull_request.head.repo.name,
     //     number: req.body.number,
     //     body: `merge: ${mergeSha}\nhead: ${headSha}\nbase: ${baseSha}`
     // });
+
+    const result = await octokit.checks.create({
+        owner: owner,
+        repo: repo,
+        name: 'sample',
+        head_sha: headSha
+    });
 
     context.res = {
         body: `Webhook ${githubEvent}.${githubAction} success.`
